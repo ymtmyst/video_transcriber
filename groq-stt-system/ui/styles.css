@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    /* Temporary dark background for development visibility */
+    /* background: linear-gradient(135deg, #1e1e2e 0%, #16162a 100%); */
+
+    /* In actual PyWebView implementation, body background should be transparent */
+    background: transparent;
+
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    /* Positioned towards the bottom */
+    padding-bottom: 10vh;
+    /* Lifted up from bottom */
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+}
+
+#stt-overlay {
+    /* Compact "Capsule" Size (approx 1/2 of previous compact size) */
+    width: 120px;
+    height: 48px;
+
+    /* Glassmorphism Background - More Opaque */
+    background: rgba(22, 22, 30, 0.9); /* Increased opacity from 0.6 to 0.9 */
+    
+    /* Fallback for environments where backdrop-filter fails */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    /* Rounded Capsule Shape */
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    /* Horizontal padding */
+    box-sizing: border-box;
+
+    /* Animation States */
+    opacity: 0;
+    transform: translateY(15px) scale(0.9);
+    transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+        transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    position: relative;
+    user-select: none;
+}
+
+#stt-overlay.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* --- Internal Layout --- */
+
+.content-row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 12px;
+}
+
+.recording-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    background-color: #ff4757;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255, 71, 87, 0.6);
+    animation: pulse-red 1.5s infinite ease-in-out;
+}
+
+/* --- Waveform --- */
+.waveform-container {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    /* slight adjustment to align vertically with dot better */
+    padding-top: 1px;
+}
+
+canvas#waveform {
+    width: 100%;
+    height: 100%;
+    /* Soft fade on edges */
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* --- Animations --- */
+@keyframes pulse-red {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Subtle inner highlight */
+#stt-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 999px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+}
